@@ -1,6 +1,6 @@
 /********************************************************************************* 
 
-WEB322 – Assignment 05
+WEB322 – Assignment 02 
 I declare that this assignment is my own work in accordance with Seneca
 Academic Policy.  No part of this assignment has been copied manually or 
 electronically from any other source (including 3rd party web sites) or 
@@ -8,9 +8,9 @@ distributed to other students. I acknoledge that violation of this policy
 to any degree results in a ZERO for this assignment and possible failure of
 the course. 
 
-Name:   Bibek Prasad Kafle
-Student ID:   152656211
-Date:  24th July, 2023
+Name:   
+Student ID:   
+Date:  
 Cyclic Web App URL:  
 GitHub Repository URL:  
 
