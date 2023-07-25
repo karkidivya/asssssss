@@ -8,9 +8,16 @@ distributed to other students. I acknoledge that violation of this policy
 to any degree results in a ZERO for this assignment and possible failure of
 the course. 
 
+<<<<<<< HEAD
 Name:   
 Student ID:   
 Date:  
+=======
+
+Name:   Bibek Prasad Kafle
+Student ID:   152656211
+Date:  24th July, 2023
+>>>>>>> 8cceb0c0468d88d6537bc5ec9830a1683b138e55
 Cyclic Web App URL:  
 GitHub Repository URL:  
 
@@ -26,7 +33,6 @@ var sequelize = new Sequelize("fttopwel", "fttopwel", "qaZeBGuEf4Z2fSzBSyD6yL-g-
   query: { raw: true },
 });
 
-// Define the Item model
 const Item = sequelize.define("item", {
   body: Sequelize.TEXT,
   title: Sequelize.STRING,
@@ -35,22 +41,16 @@ const Item = sequelize.define("item", {
   published: Sequelize.BOOLEAN,
   price: Sequelize.DOUBLE,
 });
-
-// Define the Category model
 const Category = sequelize.define("category", {
   category: Sequelize.STRING,
 });
-
-// Define the relationship: Item belongs to Category
 Item.belongsTo(Category, { foreignKey: "categoryId" });
 
-// Export the models
 module.exports = {
   Item,
   Category,
 };
 
-// Initialize the database
 module.exports.initialize = function () {
   return new Promise((resolve, reject) => {
     sequelize
