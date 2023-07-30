@@ -1,25 +1,18 @@
 /********************************************************************************* 
 
-WEB322 – Assignment 02 
+WEB322 – Assignment 05
 I declare that this assignment is my own work in accordance with Seneca
 Academic Policy.  No part of this assignment has been copied manually or 
 electronically from any other source (including 3rd party web sites) or 
 distributed to other students. I acknoledge that violation of this policy
 to any degree results in a ZERO for this assignment and possible failure of
-the course. 
-
-<<<<<<< HEAD
-Name:   
-Student ID:   
-Date:  
-=======
+the course.
 
 Name:   Bibek Prasad Kafle
 Student ID:   152656211
 Date:  24th July, 2023
->>>>>>> 8cceb0c0468d88d6537bc5ec9830a1683b138e55
-Cyclic Web App URL:  
-GitHub Repository URL:  
+Cyclic Web App URL: https://successful-vestments-bass.cyclic.app
+GitHub Repository URL:  https://github.com/Bibek16/Web322_App
 
 ********************************************************************************/
 const Sequelize = require("sequelize");

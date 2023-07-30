@@ -11,6 +11,7 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="/css/main.css" />
+     <link href="sign-in.css" rel="stylesheet">
 
     <title>WEB322 - Assignment 5</title>
   </head>
@@ -37,7 +38,7 @@
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav">
+          <ul class="nav navbar-nav navbar-right">
             {{#navLink "/Shop"}}Shop{{/navLink}}
             {{#navLink "/About"}}About{{/navLink}}
             {{#navLink "/Items"}}Items{{/navLink}}
@@ -49,6 +50,7 @@
       </div>
       <!-- /.container-fluid -->
     </nav>
+    
     <div class="container" style="padding-top: 90px;">
       {{{body}}}
     </div>
