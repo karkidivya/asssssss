@@ -1,39 +1,39 @@
 const mongoose = require('mongoose');
-// const Schema = mongoose.Schema;
-// //make a shopping item schema
-// const userSchema = new Schema({
-//     userName:{
-//         type: String,
+const dotenv = require( 'dotenv')
+dotenv.config();
+const Schema = mongoose.Schema;
+//make a shopping item schema
+const userSchema = new Schema({
+    userName:{
+        type: String,
        
-//     },
-//     password:{
-//         type: String,
+    },
+    password:{
+        type: String,
       
-//     },
-//     email :{
-//         type: String,
+    },
+    email :{
+        type: String,
         
-//     },
-//     loginHistory : {
-//         dateTime : {
-//         type: Date,
-//        }
-//     ,
-//     userAgent : {
-//         type : String ,
+    },
+    loginHistory : [
+        {
+            dateTime: Date,
+            userAgent: String
+        }
+    ]
+    ,
+    userAgent : {
+        type : String ,
        
-//     }
-// }
+    }
+}
 
-// })
+)
+let User // to be defined on new connection (see initialize)
 
-const {User} = require('./utils/model')
-// const User = mongoose.model('User', userSchema);
-
-// module.exports  = {User}
-
-//let User; // to be defined on new connection (see initialize)
-module.exports.initialize = function (URI) {
+const URI = process.env.MONGODB_URI
+module.exports.initialize = function () {
     return new Promise(function (resolve, reject) {
         console.log(URI)
         let db = mongoose.createConnection(URI)
@@ -42,8 +42,8 @@ module.exports.initialize = function (URI) {
             reject(err); // reject the promise with the provided error
         });
         db.once('open', ()=>{
-        //    User = db.model("users", userSchema);
-        //    console.log(User);
+           User = db.model("users", userSchema);
+           console.log(User);
            resolve();
         });
     });

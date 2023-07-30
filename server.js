@@ -35,9 +35,9 @@ dotenv.config()
 const URI = process.env.MONGODB_URI
 //await
 //  db.connectDB( URI )
-authData.initialize(URI);
-let userData = {userName : "divya", userAgent :'eee', email: 'karkidivya5@gmail.com', password : 'test123'}
-authData.register(userData);
+// authData.initialize(URI);
+// let userData = {userName : "divya", userAgent :'eee', email: 'karkidivya5@gmail.com', password : 'test123'}
+// authData.register(userData);
 cloudinary.config({
   cloud_name: "dmnjamutp",
   api_key: "685879682414194",
@@ -370,6 +370,7 @@ app.use((req, res) => {
 
 itemData
   .initialize()
+  .then( authData.initialize )
   .then(() => {
     app.listen(HTTP_PORT, () => {
       console.log("server listening on: " + HTTP_PORT);
