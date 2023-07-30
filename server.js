@@ -45,7 +45,7 @@ cloudinary.config({
 
   secure: true,
 });
-
+let session = true
 const upload = multer(); 
 
 const app = express();
@@ -73,7 +73,12 @@ app.engine(
   ".hbs",
   exphbs.engine({
     extname: ".hbs",
+    defaultLayout: 'main',
     helpers: {
+      // Session : function(){
+      //   return(true)
+      // },
+
       navLink: function (url, options) {
         return (
           '<li class="nav-item"><a ' +
@@ -87,6 +92,7 @@ app.engine(
           "</a></li>"
         );
       },
+      
       equal: function (lvalue, rvalue, options) {
         if (arguments.length < 3)
           throw new Error("Handlebars Helper equal needs 2 parameters");
@@ -102,10 +108,11 @@ app.engine(
         let day = dateObj.getDate().toString();
         return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
       },
+      
     },
   })
 );
-
+app.locals.Session = false;
 app.set("view engine", ".hbs");
 
 app.get("/", (req, res) => {
@@ -328,13 +335,17 @@ res.redirect("/login");
 })
 
 app.post("/register", (req, res) => {
-  const userd = req.body;
+  const userData = req.body;
  
-    console.log(userd, "hmmmmmmmmm")
-    console.log(userd, "hmmmmmmmmm")
-    console.log(userd, "hmmmmmmmmm")
-    console.log(req.body.userName)
-        res.redirect("/register");
+    console.log(userData, "hmmmmmmmmm")
+    authData.register(userData)
+    .then((post)=>{
+      res.redirect("/register");
+    })
+    .catch((err)=>{
+      res.status(500).send(err);
+    })
+      
 
 
 });

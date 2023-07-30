@@ -54,11 +54,11 @@ module.exports.register = function (userData) {
     return new Promise(function (resolve, reject) {
         console.log(userData)
         let data = userData;
-         if (data.password != 'test123') {
+         if (data.password != data.password2) {
             reject("Passwords do not match");
          } else {
             let newUser = new User(data); 
-            // let result = newUser.save()
+            let result = newUser.save()
            // console.log(result)
             resolve()
             // .then(() => {

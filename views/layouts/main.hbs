@@ -38,13 +38,23 @@
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="navbarNav">
+            {{#if Session}}
+          
           <ul class="nav navbar-nav navbar-right">
             {{#navLink "/Shop"}}Shop{{/navLink}}
             {{#navLink "/About"}}About{{/navLink}}
             {{#navLink "/Items"}}Items{{/navLink}}
             {{#navLink "/Categories"}}Categories{{/navLink}}
             {{#navLink "/items/add"}}Add Items{{/navLink}}
+            {{#navLink "/logout"}}logout{{/navLink}}
+            {{#navLink "/history"}}userHistory{{/navLink}}
           </ul>
+          {{else}}
+          <ul class="nav navbar-nav navbar-right">
+          {{#navLink "/login"}}login{{/navLink}}
+            {{#navLink "/register"}}register{{/navLink}}
+          </ul>
+           {{/if}}
         </div>
         <!-- /.navbar-collapse -->
       </div>
