@@ -19,7 +19,7 @@ GitHub Repository URL:  https://github.com/Bibek16/Web322_App
 const express = require("express");
 const itemData = require("./store-service");
 const path = require("path");
-
+const clientSessions = require("client-sessions");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 const streamifier = require("streamifier");
@@ -45,7 +45,6 @@ cloudinary.config({
 
   secure: true,
 });
-let session = true
 const upload = multer(); 
 
 const app = express();
@@ -65,7 +64,7 @@ app.use(function (req, res, next) {
       : route.replace(/\/(.*)/, ""));
 
   app.locals.viewingCategory = req.query.category;
-
+  
   next();
 });
 
@@ -112,11 +111,18 @@ app.engine(
     },
   })
 );
-app.locals.Session = false;
+// app.locals.Session = req.session.user;
+app.use(clientSessions({
+  cookieName: "session", // this is the object name that will be added to 'req'
+  secret: "week10example_web322", // this should be a long un-guessable string.
+  duration: 2 * 60 * 1000, // duration of the session in milliseconds (2 minutes)
+  activeDuration: 1000 * 60 // the session will be extended by this many ms each request (1 minute)
+}));
+
 app.set("view engine", ".hbs");
 
 app.get("/", (req, res) => {
-  res.redirect("/about");
+  res.redirect("/login");
 });
 app.get("/login", (req, res) => {
   res.render("login");
@@ -125,7 +131,7 @@ app.get("/register", (req, res) => {
   res.render("register");
 });
 
-app.get("/about", (req, res) => {
+app.get("/about",ensureLogin, (req, res) => {
   res.render("about");
 });
 
@@ -327,12 +333,54 @@ app.post("/categories/add", (req, res) => {
     res.render("addCategory", { message: "Category is required" });
   }
 });
+const user = {
+  userName: "d",
+  password: "d",
+  email: "karkidivya5@gmail.com"
+};
+function ensureLogin(req, res, next) {
+  if (!req.session.user) {
+    res.redirect("/login");
+  } else {
+    next();
+  }
+}
+app.post("/login", (req, res) => {
+  const userName = req.body.userName;
+  const password = req.body.password;
 
-app.post("/login", (req,res)=> {
-const loginData = req.body
-console.log(loginData)
-res.redirect("/login");
-})
+  if(userName === "" || password === "") {
+    // Render 'missing credentials'
+    return res.render("login", { errorMsg: "Missing credentials." });
+  }
+
+  // use sample "user" (declared above)
+  if(userName === user.userName && password === user.password){
+
+    // Add the user on the session and redirect them to the dashboard page.
+    req.session.user = {
+      userName: user.userName,
+      email: user.email
+    };
+    console.log(req.session , "ddddddddddddddddd")
+    app.locals.session = req.session;
+    res.redirect("/about");
+  } else {
+    // render 'invalid username or password'
+    res.render("login", { errorMsg: "invalid username or password!"});
+  }
+});
+
+// Log a user out by destroying their session
+// and redirecting them to /login
+app.get("/logout", function(req, res) {
+  req.session.reset();
+  app.locals.session = req.session;
+  console.log(req.session , "ddddddddddddddddd")
+  res.redirect("/login");
+});
+
+
 
 app.post("/register", (req, res) => {
   const userData = req.body;

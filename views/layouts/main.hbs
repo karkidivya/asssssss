@@ -11,7 +11,7 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="/css/main.css" />
-     <link href="sign-in.css" rel="stylesheet">
+    <link href="sign-in.css" rel="stylesheet" />
 
     <title>WEB322 - Assignment 5</title>
   </head>
@@ -38,29 +38,48 @@
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="navbarNav">
-            {{#if Session}}
-          
-          <ul class="nav navbar-nav navbar-right">
-            {{#navLink "/Shop"}}Shop{{/navLink}}
-            {{#navLink "/About"}}About{{/navLink}}
-            {{#navLink "/Items"}}Items{{/navLink}}
-            {{#navLink "/Categories"}}Categories{{/navLink}}
-            {{#navLink "/items/add"}}Add Items{{/navLink}}
-            {{#navLink "/logout"}}logout{{/navLink}}
-            {{#navLink "/history"}}userHistory{{/navLink}}
-          </ul>
+          {{#if session.user}}
+
+            <ul class="nav navbar-nav navbar-right">
+              {{#navLink "/Shop"}}Shop{{/navLink}}
+              {{#navLink "/About"}}About{{/navLink}}
+              {{#navLink "/Items"}}Items{{/navLink}}
+              {{#navLink "/Categories"}}Categories{{/navLink}}
+              {{#navLink "/items/add"}}Add Items{{/navLink}}
+              {{!-- {{#navLink "/logout"}}logout{{/navLink}} --}}
+              {{!-- {{#navLink "/history"}}userHistory{{/navLink}} --}}
+            </ul>
+
+            <div class="dropdown" style = 'margin-left : 600px'>
+              <button
+                class="btn btn-secondary dropdown-toggle"
+                type="button"
+                id="dropdownMenuButton"
+                data-toggle="dropdown"
+                data-bs-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                
+              >
+                &nbsp;&nbsp;{{session.user.userName}}&nbsp;&nbsp;
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="/userHistory">User History</a>
+                <a class="dropdown-item" href="/logout">Log Out</a>
+              </div>
+            </div>
           {{else}}
-          <ul class="nav navbar-nav navbar-right">
-          {{#navLink "/login"}}login{{/navLink}}
-            {{#navLink "/register"}}register{{/navLink}}
-          </ul>
-           {{/if}}
+            <ul class="nav navbar-nav navbar-right">
+              {{#navLink "/login"}}login{{/navLink}}
+              {{#navLink "/register"}}register{{/navLink}}
+            </ul>
+          {{/if}}
         </div>
         <!-- /.navbar-collapse -->
       </div>
       <!-- /.container-fluid -->
     </nav>
-    
+
     <div class="container" style="padding-top: 90px;">
       {{{body}}}
     </div>
