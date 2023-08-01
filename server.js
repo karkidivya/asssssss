@@ -119,6 +119,12 @@ app.use(clientSessions({
   activeDuration: 1000 * 60 // the session will be extended by this many ms each request (1 minute)
 }));
 
+app.use(function(req, res, next) {
+  res.locals.session = req.session;
+  next();
+});
+
+
 app.set("view engine", ".hbs");
 
 app.get("/", (req, res) => {
@@ -345,44 +351,17 @@ function ensureLogin(req, res, next) {
     next();
   }
 }
-// app.post("/login", (req, res) => {
-//   const userName = req.body.userName;
-//   const password = req.body.password;
 
-//   if(userName === "" || password === "") {
-//     // Render 'missing credentials'
-//     return res.render("login", { errorMsg: "Missing credentials." });
-//   }
-
-//   // use sample "user" (declared above)
-//   if(userName === user.userName && password === user.password){
-
-//     // Add the user on the session and redirect them to the dashboard page.
-//     req.session.user = {
-//       userName: user.userName,
-//       email: user.email
-//     };
-//     console.log(req.session , "ddddddddddddddddd")
-//     app.locals.session = req.session;
-//     res.redirect("/about");
-//   } else {
-//     // render 'invalid username or password'
-//     res.render("login", { errorMsg: "invalid username or password!"});
-//   }
-// });
 app.post("/login", (req, res) => {
-  const userName = req.body.userName;
-  const password = req.body.password;
+  req.body.userAgent = req.get('User-Agent');
   const userData = req.body
   authData.CheckUser(userData)
   .then((data) => {
     req.session.user = {
-        userName: data[0].userName,
-        email : data[0].email
-       
-    }
-    console.log('sessions ' , req.session.user)
-    app.locals.session = req.session;
+        userName: data.userName,
+        email : data.email,
+        loginHistory : data.loginHistory
+       }
    res.redirect('/about');
 })
 .catch((err) => {
@@ -397,17 +376,17 @@ app.post("/login", (req, res) => {
 // and redirecting them to /login
 app.get("/logout", function(req, res) {
   req.session.reset();
-  app.locals.session = req.session;
-  console.log(req.session , "ddddddddddddddddd")
   res.redirect("/login");
 });
+
+app.get("/userHistory", function(req,res){
+  res.render("userHistory")
+})
 
 
 
 app.post("/register", (req, res) => {
   const userData = req.body;
- 
-    console.log(userData, "hmmmmmmmmm")
     authData.register(userData)
     .then((post)=>{
       res.redirect("/register");

@@ -1,0 +1,30 @@
+<div>
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">{{session.user.userName}} ({{session.user.email}}) History </h1>
+  </div>
+</div>
+<br>
+<br><br>
+<table class="table">
+  <thead>
+    <tr>
+      
+      <th scope="col">Login Date/Time</th>
+      <th scope="col">Client Information</th>
+     
+    </tr>
+  </thead>
+  <tbody>
+    {{#if session.user}}
+    {{#each session.user.loginHistory}}
+    <tr>
+      <td>{{dateTime}} </td>
+      <td>{{userAgent}} </td>
+      
+    </tr>
+    {{/each}}
+    {{/if}}
+  </tbody>
+</table>
+</div>
