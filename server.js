@@ -131,7 +131,7 @@ app.get("/register", (req, res) => {
   res.render("register");
 });
 
-app.get("/about",ensureLogin, (req, res) => {
+app.get("/about", (req, res) => {
   res.render("about");
 });
 
@@ -168,7 +168,7 @@ app.get("/shop", async (req, res) => {
   res.render("shop", { data: viewData });
 });
 
-app.get("/items", (req, res) => {
+app.get("/items",ensureLogin, (req, res) => {
   let queryPromise = null;
 
   if (req.query.category) {
@@ -193,7 +193,7 @@ app.get("/items", (req, res) => {
 });
 
 
-app.get("/items/add", (req, res) => {
+app.get("/items/add",ensureLogin, (req, res) => {
   itemData
     .getCategories()
     .then((data) => {
@@ -262,7 +262,7 @@ app.get("/item/:id", (req, res) => {
     });
 });
 
-app.get("/categories", (req, res) => {
+app.get("/categories",ensureLogin, (req, res) => {
   itemData
     .getCategories()
     .then((data) => {
@@ -333,11 +333,11 @@ app.post("/categories/add", (req, res) => {
     res.render("addCategory", { message: "Category is required" });
   }
 });
-const user = {
-  userName: "d",
-  password: "d",
-  email: "karkidivya5@gmail.com"
-};
+// const user = {
+//   userName: "d",
+//   password: "d",
+//   email: "karkidivya5@gmail.com"
+// };
 function ensureLogin(req, res, next) {
   if (!req.session.user) {
     res.redirect("/login");
@@ -345,31 +345,53 @@ function ensureLogin(req, res, next) {
     next();
   }
 }
+// app.post("/login", (req, res) => {
+//   const userName = req.body.userName;
+//   const password = req.body.password;
+
+//   if(userName === "" || password === "") {
+//     // Render 'missing credentials'
+//     return res.render("login", { errorMsg: "Missing credentials." });
+//   }
+
+//   // use sample "user" (declared above)
+//   if(userName === user.userName && password === user.password){
+
+//     // Add the user on the session and redirect them to the dashboard page.
+//     req.session.user = {
+//       userName: user.userName,
+//       email: user.email
+//     };
+//     console.log(req.session , "ddddddddddddddddd")
+//     app.locals.session = req.session;
+//     res.redirect("/about");
+//   } else {
+//     // render 'invalid username or password'
+//     res.render("login", { errorMsg: "invalid username or password!"});
+//   }
+// });
 app.post("/login", (req, res) => {
   const userName = req.body.userName;
   const password = req.body.password;
-
-  if(userName === "" || password === "") {
-    // Render 'missing credentials'
-    return res.render("login", { errorMsg: "Missing credentials." });
-  }
-
-  // use sample "user" (declared above)
-  if(userName === user.userName && password === user.password){
-
-    // Add the user on the session and redirect them to the dashboard page.
+  const userData = req.body
+  authData.CheckUser(userData)
+  .then((data) => {
     req.session.user = {
-      userName: user.userName,
-      email: user.email
-    };
-    console.log(req.session , "ddddddddddddddddd")
+        userName: data[0].userName,
+        email : data[0].email
+       
+    }
+    console.log('sessions ' , req.session.user)
     app.locals.session = req.session;
-    res.redirect("/about");
-  } else {
-    // render 'invalid username or password'
-    res.render("login", { errorMsg: "invalid username or password!"});
-  }
+   res.redirect('/about');
+})
+.catch((err) => {
+  res.render("login",{errorMessage: err, userName: req.body.userName});
 });
+
+})
+
+
 
 // Log a user out by destroying their session
 // and redirecting them to /login
