@@ -357,12 +357,13 @@ app.post("/login", (req, res) => {
   const userData = req.body
   authData.CheckUser(userData)
   .then((data) => {
+    console.log(data, 'gggggggg')
     req.session.user = {
         userName: data.userName,
         email : data.email,
         loginHistory : data.loginHistory
        }
-   res.redirect('/about');
+   res.redirect('/items');
 })
 .catch((err) => {
   res.render("login",{errorMessage: err, userName: req.body.userName});
