@@ -27,12 +27,12 @@ const streamifier = require("streamifier");
 const exphbs = require("express-handlebars");
 const { Console, log } = require("console");
 
- const authData = require('./auth-service')
-const dotenv =   require('dotenv')
+const authData = require("./auth-service");
+const dotenv = require("dotenv");
 // const Database = require('./utils/db.js')
-dotenv.config()
+dotenv.config();
 // const db = new Database();
-const URI = process.env.MONGODB_URI
+const URI = process.env.MONGODB_URI;
 //await
 //  db.connectDB( URI )
 // authData.initialize(URI);
@@ -45,11 +45,11 @@ cloudinary.config({
 
   secure: true,
 });
-const upload = multer(); 
+const upload = multer();
 
 const app = express();
 // app.use(express.json())
-const HTTP_PORT = process.env.PORT || 8080;
+const HTTP_PORT = process.env.PORT || 5000;
 
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
@@ -64,7 +64,7 @@ app.use(function (req, res, next) {
       : route.replace(/\/(.*)/, ""));
 
   app.locals.viewingCategory = req.query.category;
-  
+
   next();
 });
 
@@ -72,7 +72,7 @@ app.engine(
   ".hbs",
   exphbs.engine({
     extname: ".hbs",
-    defaultLayout: 'main',
+    defaultLayout: "main",
     helpers: {
       // Session : function(){
       //   return(true)
@@ -91,7 +91,7 @@ app.engine(
           "</a></li>"
         );
       },
-      
+
       equal: function (lvalue, rvalue, options) {
         if (arguments.length < 3)
           throw new Error("Handlebars Helper equal needs 2 parameters");
@@ -107,23 +107,23 @@ app.engine(
         let day = dateObj.getDate().toString();
         return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
       },
-      
     },
   })
 );
 // app.locals.Session = req.session.user;
-app.use(clientSessions({
-  cookieName: "session", // this is the object name that will be added to 'req'
-  secret: "week10example_web322", // this should be a long un-guessable string.
-  duration: 2 * 60 * 1000, // duration of the session in milliseconds (2 minutes)
-  activeDuration: 1000 * 60 // the session will be extended by this many ms each request (1 minute)
-}));
+app.use(
+  clientSessions({
+    cookieName: "session", // this is the object name that will be added to 'req'
+    secret: "week10example_web322", // this should be a long un-guessable string.
+    duration: 10000, // duration of the session in milliseconds (2 minutes)
+    activeDuration: 1000 * 60, // the session will be extended by this many ms each request (1 minute)
+  })
+);
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.locals.session = req.session;
   next();
 });
-
 
 app.set("view engine", ".hbs");
 
@@ -174,7 +174,7 @@ app.get("/shop", async (req, res) => {
   res.render("shop", { data: viewData });
 });
 
-app.get("/items",ensureLogin, (req, res) => {
+app.get("/items", ensureLogin, (req, res) => {
   let queryPromise = null;
 
   if (req.query.category) {
@@ -198,8 +198,7 @@ app.get("/items",ensureLogin, (req, res) => {
     });
 });
 
-
-app.get("/items/add",ensureLogin, (req, res) => {
+app.get("/items/add", ensureLogin, (req, res) => {
   itemData
     .getCategories()
     .then((data) => {
@@ -268,7 +267,7 @@ app.get("/item/:id", (req, res) => {
     });
 });
 
-app.get("/categories",ensureLogin, (req, res) => {
+app.get("/categories", ensureLogin, (req, res) => {
   itemData
     .getCategories()
     .then((data) => {
@@ -323,7 +322,6 @@ app.get("/categories/add", (req, res) => {
   res.render("addCategory");
 });
 
-
 app.post("/categories/add", (req, res) => {
   const category = req.body.category.trim();
   if (category) {
@@ -339,11 +337,7 @@ app.post("/categories/add", (req, res) => {
     res.render("addCategory", { message: "Category is required" });
   }
 });
-// const user = {
-//   userName: "d",
-//   password: "d",
-//   email: "karkidivya5@gmail.com"
-// };
+
 function ensureLogin(req, res, next) {
   if (!req.session.user) {
     res.redirect("/login");
@@ -353,51 +347,47 @@ function ensureLogin(req, res, next) {
 }
 
 app.post("/login", (req, res) => {
-  req.body.userAgent = req.get('User-Agent');
-  const userData = req.body
-  authData.CheckUser(userData)
-  .then((data) => {
-    console.log(data, 'gggggggg')
-    req.session.user = {
-        userName: data.userName,
-        email : data.email,
-        loginHistory : data.loginHistory
-       }
-   res.redirect('/items');
-})
-.catch((err) => {
-  res.render("login",{errorMessage: err, userName: req.body.userName});
+  req.body.userAgent = req.get("User-Agent");
+  const userData = req.body;
+  authData
+    .CheckUser(userData)
+    .then((data) => {
+      req.session.user = {
+        userName: data[0].userName,
+        email: data[0].email,
+        loginHistory: data[0].loginHistory,
+      };
+      res.redirect("/about");
+    })
+    .catch((err) => {
+      res.render("login", { errorMessage: err });
+    });
 });
-
-})
-
-
 
 // Log a user out by destroying their session
 // and redirecting them to /login
-app.get("/logout", function(req, res) {
+app.get("/logout", function (req, res) {
   req.session.reset();
   res.redirect("/login");
 });
 
-app.get("/userHistory", function(req,res){
-  res.render("userHistory")
-})
-
-
+app.get("/userHistory", function (req, res) {
+  res.render("userHistory");
+});
 
 app.post("/register", (req, res) => {
   const userData = req.body;
-    authData.register(userData)
-    .then((post)=>{
-      res.redirect("/register");
+  authData
+    .register(userData)
+    .then((post) => {
+      res.render("register", { successMessage: "User created" });
     })
-    .catch((err)=>{
-      res.status(500).send(err);
-    })
-      
-
-
+    .catch((err) => {
+      res.render("register", {
+        errorMessage: err,
+        userName: userData.userName,
+      });
+    });
 });
 
 app.get("/categories/delete/:id", (req, res) => {
@@ -407,7 +397,9 @@ app.get("/categories/delete/:id", (req, res) => {
       res.redirect("/categories");
     })
     .catch((err) => {
-      res.render("categories", { message: "Unable to Remove Category / Category not found" });
+      res.render("categories", {
+        message: "Unable to Remove Category / Category not found",
+      });
     });
 });
 
@@ -422,16 +414,13 @@ app.get("/items/delete/:id", (req, res) => {
     });
 });
 
-
 app.use((req, res) => {
   res.status(404).render("404");
 });
 
-
-
 itemData
   .initialize()
-  .then( authData.initialize )
+  .then(authData.initialize)
   .then(() => {
     app.listen(HTTP_PORT, () => {
       console.log("server listening on: " + HTTP_PORT);
@@ -440,4 +429,3 @@ itemData
   .catch((err) => {
     console.log(err);
   });
-
